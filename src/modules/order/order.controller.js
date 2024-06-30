@@ -86,3 +86,36 @@ export const create =async(req,res)=>{
     }
    return res.json({message:"success",order});
 }
+
+
+export const getOrders = async(req,res)=>{
+    const orders = await orderModel.find({$or:[
+        {
+            status:'pending',
+        },
+        {
+            status:'confirmed',
+        }
+    ]});
+    return res.json({message:"success",orders});
+}
+
+export const getUserOrders = async(req,res)=>{
+    const orders = await orderModel.find({userId:req.user._id});
+    
+    return res.json({message:"success",orders});
+}
+
+export const changeStatus = async(req,res)=>{
+    const {orderId} = req.params;
+    const {status} = req.body;
+
+    const order = await orderModel.findById(orderId);
+    if(!order){
+        return res.json({message:"order not found"});
+
+    }
+    order.status = status;
+    await order.save();
+    return res.json({message:"success",order})
+}

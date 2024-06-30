@@ -5,4 +5,7 @@ import { endPoints } from './order.role.js';
 const router =Router();
 
 router.post('/',auth(endPoints.create),controller.create);
+router.get('/all',auth(endPoints.all),controller.getOrders);
+router.get('/userOrders',auth(endPoints.getOrder),controller.getUserOrders);
+router.patch('/changeStatus/:orderId',auth(endPoints.changeStatus),controller.changeStatus);
 export default router;
