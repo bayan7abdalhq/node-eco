@@ -19,14 +19,11 @@ const reviewSchema = new Schema({
         type:Types.ObjectId,
         ref:'User',
         required:true,
-
     },
     image:{
         type:Object,
     },
-},{
-    timestamps:true,
-});
+},);
 
 const reviewModel = model('Review',reviewSchema);
 export default reviewModel;

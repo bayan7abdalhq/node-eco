@@ -35,16 +35,41 @@ export const create = async(req,res)=>{
 }
 
 export const getProducts = async (req, res) => {
-   const {skip,limit} =pagination(req.query.page, req.query.limit);
-   
-    const products = await productModel.find({}).skip(skip).limit(limit).populate({
+  
+  const {skip,limit} =pagination(req.query.page, req.query.limit);
+  let queryObj ={...req.query};
+  const execQuery = ['page','limit','sort','search','fields'];
+
+  execQuery.map( (ele)=>{
+   delete queryObj[ele];
+  });
+
+  queryObj =JSON.stringify(queryObj);
+  queryObj = queryObj.replace(/gt|gte|lt|lte|in|nin|eq/g,match =>`$${match}`); 
+  queryObj =JSON.parse(queryObj);
+
+ 
+
+    const mongoseQuery =  productModel.find(queryObj).skip(skip).limit(limit);
+   /* .populate({
       path:'reviews',
       populate:{
         path:'userId',
         select:'userName -_id',
       },
-    }).select('name');
+    })*/
+    if(req.query.search){
+      mongoseQuery.find({
+        $or:[
+         { name:{$regex:req.query.search}},
+         { description:{$regex:req.query.search}}
+        ]
+      });
+    }
+    const count = await productModel.estimatedDocumentCount();
+    mongoseQuery.select(req.query.fields);
+    const products = await mongoseQuery.sort(req.query.sort);
 
-    return res.status(200).json({message:"success",products});
+    return res.status(200).json({message:"success",count,products});
 };
 
