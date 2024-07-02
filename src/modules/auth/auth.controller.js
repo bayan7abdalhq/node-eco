@@ -7,16 +7,10 @@ import { customAlphabet, nanoid } from 'nanoid';
 export const register =async(req,res)=>{
 
     const {userName,email,password} = req.body;
-
-    const user = await userModel.findOne({email});
-    if(user){
-        return res.status(409).json({message:"email already exists"});
-    }
-
    const hashedPassword =  bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
    const createUser = await userModel.create({userName,email,password:hashedPassword});
-
-   await SendEmail(email,`welcome`,`<h2> hello ya ${userName}</h2>`);
+    const token =jwt.sign({email},process.env.CONFIRM_EMAILTOKEN);
+   await SendEmail(email,`welcome`,userName,token);
    return res.status(201).json({message:"success",user:createUser});
 }
 
@@ -40,6 +34,15 @@ export const login =async(req,res)=>{
     const token = jwt.sign({id:user._id,role:user.role},process.env.LOGINSIG);
     return res.status(200).json({message:"success",token});
 
+}
+
+export const confirmEmail = async(req,res)=>{
+    const token =req.params.token;
+    const decoded =jwt.verify(token,process.env.CONFIRM_EMAILTOKEN);
+
+    await userModel.findOneAndUpdate({email:decoded.email},{confirmEmail:true});
+
+    return res.status(200).json({message:"success"});
 }
 export const sendCode=async(req,res)=>{
     const {email} = req.body;
