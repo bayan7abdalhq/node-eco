@@ -3,6 +3,7 @@ import categoryModel from "../../../DB/model/category.model.js";
 import productModel from "../../../DB/model/product.model.js"
 import subcategoryModel from "../../../DB/model/subcategory.model.js";
 import cloudinary from "../../utls/cloudinary.js";
+import { pagination } from "../../utls/pagination.js";
 
 
 export const create = async(req,res)=>{
@@ -34,13 +35,15 @@ export const create = async(req,res)=>{
 }
 
 export const getProducts = async (req, res) => {
-    const products = await productModel.find({}).populate({
-      path: 'reviews',
+   const {skip,limit} =pagination(req.query.page, req.query.limit);
+   
+    const products = await productModel.find({}).skip(skip).limit(limit).populate({
+      path:'reviews',
       populate:{
         path:'userId',
         select:'userName -_id',
       },
-    });
+    }).select('name');
 
     return res.status(200).json({message:"success",products});
 };
