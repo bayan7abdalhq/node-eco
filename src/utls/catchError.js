@@ -3,7 +3,7 @@ export const asyncHandler = (func)=>{
         try{
             return await func(req,res,next);
         }catch(error){
-            return res.status(500).json({message:"errooooooor"})
+            return res.status(500).json({message:error.message});
         }
     }
 }

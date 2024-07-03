@@ -5,11 +5,13 @@ import { auth } from '../../middleware/auth.js';
 import { endPoints } from './product.role.js';
 import reviewRouter from './../review/review.router.js';
 import { asyncHandler } from '../../utls/catchError.js';
+import { validation } from '../../middleware/validation.js';
+import * as schema from './product.validation.js';
 const router =Router();
 
 router.use('/:productId/review',reviewRouter)
 router.post('/',auth(endPoints.create),fileUpload(fileType.image).fields([
-    {name:'mainImage', maxCount:1},
+    {name:'image', maxCount:1},
     {name:'subImages', maxCount:5},
 ]),asyncHandler(controller.create));
 

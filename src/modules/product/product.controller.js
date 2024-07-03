@@ -20,9 +20,9 @@ export const create = async(req,res)=>{
    req.body.slug =slugify(name);
    req.body.finalPrice = price -((price * (discount || 0)) /100);
 
-   const {secure_url,public_id} =await cloudinary.uploader.upload(req.files.mainImage[0].path,
+   const {secure_url,public_id} =await cloudinary.uploader.upload(req.files.image[0].path,
     {folder:`${process.env.APPNAME}/product/${name}`});
-    req.body.mainImage = {secure_url,public_id};
+    req.body.image = {secure_url,public_id};
     req.body.subImages =[];
     for (const file  of req.files.subImages){
         const {secure_url,public_id} =await cloudinary.uploader.upload(file.path,
