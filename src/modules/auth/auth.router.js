@@ -9,8 +9,8 @@ const router =Router();
 
 router.post('/register',validation(schema.registerSchema),checkEmail,asyncHandler(controller.register));
 router.post('/login',validation(schema.loginSchema),asyncHandler(controller.login));
-router.patch('/sendCode',asyncHandler(controller.sendCode));
-router.patch('/forgetPassword',asyncHandler(controller.forgetPassword));
+router.patch('/sendCode',validation(schema.sendCodeSchema),asyncHandler(controller.sendCode));
+router.patch('/forgetPassword',validation(schema.forgetPassword),asyncHandler(controller.forgetPassword));
 router.get('/confirmEmail/:token',asyncHandler(controller.confirmEmail));
 
 
