@@ -5,10 +5,10 @@ import SendEmail from '../../utls/email.js';
 import { customAlphabet, nanoid } from 'nanoid';
 
 export const register =async(req,res)=>{
-
+    
     const {userName,email,password} = req.body;
-   const hashedPassword =  bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
-   const createUser = await userModel.create({userName,email,password:hashedPassword});
+    const hashedPassword =  bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
+    const createUser = await userModel.create({userName,email,password:hashedPassword});
     const token =jwt.sign({email},process.env.CONFIRM_EMAILTOKEN);
    await SendEmail(email,`welcome`,userName,token);
    return res.status(201).json({message:"success",user:createUser});
