@@ -18,7 +18,7 @@ export const createProductSchema = Joi.object({
     path:Joi.string().required(),
     size:Joi.number().max(5000000).required(),
    }).required(),
-   subImage:Joi.array().items(
+   subImages:Joi.array().items(
     Joi.object({
         fieldname:Joi.string().required(),
     originalname:Joi.string().required(),

@@ -10,10 +10,10 @@ import * as schema from './product.validation.js';
 const router =Router();
 
 router.use('/:productId/review',reviewRouter)
-router.post('/',auth(endPoints.create),fileUpload(fileType.image).fields([
+router.post('/',fileUpload(fileType.image).fields([
     {name:'image', maxCount:1},
     {name:'subImages', maxCount:5},
-]),asyncHandler(controller.create));
+]),validation(schema.createProductSchema),auth(endPoints.create),asyncHandler(controller.create));
 
 router.get('/',asyncHandler(controller.getProducts));
 export default router;

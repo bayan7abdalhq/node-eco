@@ -24,12 +24,13 @@ export const create = async(req,res)=>{
     {folder:`${process.env.APPNAME}/product/${name}`});
     req.body.image = {secure_url,public_id};
     req.body.subImages =[];
+    if(req.files.subImages){
     for (const file  of req.files.subImages){
         const {secure_url,public_id} =await cloudinary.uploader.upload(file.path,
             {folder:`${process.env.APPNAME}/product/${name}/subImages`});
             req.body.subImages.push({secure_url,public_id});
     }
-
+  }
     const product = await productModel.create(req.body);
    return res.status(201).json({message:"success",product});
 }
